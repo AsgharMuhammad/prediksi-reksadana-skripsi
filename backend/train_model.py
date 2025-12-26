@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import joblib
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import TimeSeriesSplit, GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import os
@@ -172,7 +172,13 @@ print(df_scaled_preview.head(10))
 print("\n=== Statistik Data yang Sudah Distandarisasi ===")
 print(df_scaled_preview.describe().round(4))
 
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, shuffle=False)
+split_index = int(len(X_scaled) * 0.8)
+
+X_train = X_scaled[:split_index]
+X_test  = X_scaled[split_index:]
+
+y_train = y.iloc[:split_index]
+y_test  = y.iloc[split_index:]
 
 param_grid = {
    'n_estimators': [200, 300],
@@ -183,11 +189,11 @@ param_grid = {
 }
 
 rf = RandomForestRegressor(random_state=42, n_jobs=-1)
-
+tscv = TimeSeriesSplit(n_splits=5)
 grid_search = GridSearchCV(
     estimator=rf,
     param_grid=param_grid,
-    cv=5,
+    cv=tscv,
     scoring='neg_mean_squared_error',
     n_jobs=-1,
     verbose=1
