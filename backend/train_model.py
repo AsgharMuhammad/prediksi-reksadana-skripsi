@@ -181,11 +181,11 @@ y_train = y.iloc[:split_index]
 y_test  = y.iloc[split_index:]
 
 param_grid = {
-   'n_estimators': [200, 300],
-    'max_depth': [15, 20],
-    'min_samples_split': [2, 5],
-    'min_samples_leaf': [1, 2],
-    'max_features': ['sqrt', 'log2']
+   'n_estimators': [400, 500],
+    'max_depth': [25, 30],
+    'min_samples_split': [2, 4],
+    'min_samples_leaf': [1, 3],
+    'max_features': ['sqrt', 'log2', 0.3]
 }
 
 rf = RandomForestRegressor(random_state=42, n_jobs=-1)
